@@ -1,0 +1,35 @@
+# --- Dependencies (reinstalled from lockfiles) ---
+vendor/
+node_modules/
+
+# --- Environment & secrets (versioned template: .env.example) ---
+.env
+.env.*
+!.env.example
+
+# --- Local database ---
+*.sqlite
+*.sqlite-journal
+
+# --- Build output & caches ---
+dist/
+.angular/
+backend/public/build/
+backend/public/hot
+backend/public/app/
+
+# --- Logs & test artifacts ---
+*.log
+.phpunit.result.cache
+coverage/
+
+# --- OS & IDE ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# --- Local AI tooling state ---
+.claude/settings.local.json
