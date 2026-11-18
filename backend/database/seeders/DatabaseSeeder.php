@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             ProductReferenceSeeder::class,
             CustomerSeeder::class,
             QuoteSeeder::class,
+            SuiteModuleSeeder::class,
         ]);
     }
 }
