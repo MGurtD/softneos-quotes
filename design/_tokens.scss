@@ -43,6 +43,24 @@ $headings-font-weight: 600;
 $display-font-weight: 600;
 $font-weight-semibold: 600;
 
+// Type scale. Poppins has a tall x-height: a 15px base reads like 16px in
+// other fonts. Bootstrap derives inputs, buttons and headings from these.
+$font-size-base: 0.9375rem;              // 15px
+$font-size-sm: 0.8125rem;                // 13px (.btn-sm, .form-control-sm, small)
+$font-size-lg: 1.0625rem;                // 17px
+$h1-font-size: $font-size-base * 2;      // 30px
+$h2-font-size: $font-size-base * 1.75;   // 26px
+$h3-font-size: $font-size-base * 1.5;    // 22.5px
+$h4-font-size: $font-size-base * 1.25;
+$h5-font-size: $font-size-base * 1.125;
+$h6-font-size: $font-size-base;
+
+// Denser tables: more rows on screen in the clients area.
+$table-cell-padding-y: 0.55rem;
+$table-cell-padding-x: 0.75rem;
+$table-cell-padding-y-sm: 0.3rem;
+$table-cell-padding-x-sm: 0.4rem;
+
 // Shape: soft corners instead of the current square buttons.
 $border-radius: 0.375rem;
 $border-radius-sm: 0.25rem;

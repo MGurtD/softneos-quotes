@@ -20,4 +20,5 @@ $theme-colors: map-merge($theme-colors, ('accent': $brand-lime));
 }
 
 @import 'public';
+@import 'area';
 @import 'print';

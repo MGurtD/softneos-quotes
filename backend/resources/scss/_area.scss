@@ -1,0 +1,34 @@
+// Clients area (Blade layout app + Angular elements). Global CSS, so the
+// Angular components only add the class, never redefine the style.
+
+// Data tables: small uppercase headers and quiet links.
+.table-data {
+    margin-bottom: 0;
+
+    > thead th {
+        font-size: 0.6875rem; // 11px
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: $brand-gray;
+        white-space: nowrap;
+        background: $brand-surface;
+    }
+
+    a {
+        text-decoration: none;
+
+        &:hover,
+        &:focus-visible {
+            text-decoration: underline;
+        }
+    }
+}
+
+// Framed container for a data table (rounded border, clipped corners).
+.table-frame {
+    border: 1px solid rgba($brand-navy, 0.12);
+    border-radius: $border-radius-lg;
+    background: $white;
+    overflow: hidden;
+}
