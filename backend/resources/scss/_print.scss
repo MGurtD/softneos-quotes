@@ -1,0 +1,77 @@
+// Printable quote: an A4 sheet on screen, clean paper output with Ctrl+P.
+
+@page {
+    size: A4;
+    margin: 15mm;
+}
+
+.print-body {
+    background: $light;
+}
+
+.print-sheet {
+    max-width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto 2rem;
+    padding: 18mm 16mm;
+    background: $white;
+    box-shadow: $box-shadow;
+    border-top: 6px solid $brand-lime;
+}
+
+.print-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $secondary;
+    margin-bottom: 0.25rem;
+}
+
+.print-table thead th {
+    background: $brand-navy;
+    color: $white;
+    font-weight: 500;
+}
+
+.print-totals tfoot th,
+.print-totals tfoot td {
+    border-bottom: 0;
+}
+
+.print-grand-total th,
+.print-grand-total td {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: $brand-blue;
+    border-top: 2px solid $brand-navy;
+}
+
+@media print {
+    .print-toolbar {
+        display: none !important;
+    }
+
+    .print-body {
+        background: $white;
+    }
+
+    .print-sheet {
+        max-width: none;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+    }
+
+    // Keep table header colours on paper.
+    .print-table thead th,
+    .print-sheet {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .print-table tr {
+        break-inside: avoid;
+    }
+}
