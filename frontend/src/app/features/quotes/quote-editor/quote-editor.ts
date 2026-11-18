@@ -23,6 +23,14 @@ interface PreviewGroup {
   vat: number;
 }
 
+/** Button copy for each target status (the server decides which ones are allowed). */
+const ACTIONS: Record<QuoteStatusValue, { label: string; icon: string }> = {
+  sent: { label: 'Envia', icon: 'bi-send' },
+  accepted: { label: 'Accepta', icon: 'bi-check2-circle' },
+  rejected: { label: 'Rebutja', icon: 'bi-x-circle' },
+  draft: { label: 'Reobre', icon: 'bi-arrow-counterclockwise' },
+};
+
 const round2 = (value: number): number => Math.round((value + Number.EPSILON) * 100) / 100;
 const isoDate = (date: Date): string => date.toISOString().slice(0, 10);
 
@@ -96,6 +104,20 @@ export class QuoteEditor {
     return { breakdown, subtotal, vatTotal, total: round2(subtotal + vatTotal) };
   });
 
+  /** While editing, the live preview; once locked, the figures the server calculated. */
+  protected readonly totals = computed(() => {
+    const saved = this.quote()?.totals;
+    if (this.editable() || !saved) {
+      return this.preview();
+    }
+    return {
+      breakdown: saved.vat_breakdown.map((g) => ({ rate: Number(g.rate), base: Number(g.base), vat: Number(g.vat) })),
+      subtotal: Number(saved.subtotal),
+      vatTotal: Number(saved.vat_total),
+      total: Number(saved.total),
+    };
+  });
+
   constructor() {
     effect(() => {
       const id = this.quoteId();
@@ -137,7 +159,17 @@ export class QuoteEditor {
     return line ? round2((line.quantity ?? 0) * (line.unit_price ?? 0) * (1 - (line.discount_pct ?? 0) / 100)) : 0;
   }
 
+  protected actionFor(status: QuoteStatusValue): { label: string; icon: string } {
+    return ACTIONS[status];
+  }
+
   protected save(): void {
+    this.dropBlankLines();
+    if (this.lines.length === 0) {
+      this.addLine();
+      this.errors.set(['Afegeix almenys una línia al pressupost.']);
+      return;
+    }
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.errors.set(['Revisa els camps marcats en vermell.']);
@@ -157,7 +189,7 @@ export class QuoteEditor {
           return;
         }
         this.apply(quote);
-        this.notice.set('Pressupost desat. Els totals són els calculats pel servidor.');
+        this.notice.set('Pressupost desat.');
         this.saving.set(false);
       },
       error: (error: HttpErrorResponse) => this.fail(error),
@@ -234,6 +266,20 @@ export class QuoteEditor {
       this.form.disable();
     }
     this.form.markAsPristine();
+  }
+
+  /**
+   * A line with no reference and no description was never filled in (for
+   * example the one left after "Afegeix línia"): ignore it instead of
+   * blocking the save with validation errors.
+   */
+  private dropBlankLines(): void {
+    for (let i = this.lines.length - 1; i >= 0; i--) {
+      const line = this.lines.at(i).getRawValue();
+      if (line.product_reference_id === null && line.description.trim() === '') {
+        this.lines.removeAt(i);
+      }
+    }
   }
 
   private fail(error: HttpErrorResponse): void {
