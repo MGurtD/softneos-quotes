@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\QuoteStatus;
 use App\Models\Quote;
 use App\Services\QuoteCalculator;
 use Illuminate\Http\Request;
@@ -26,6 +27,12 @@ class QuoteResource extends JsonResource
             'status' => [
                 'value' => $this->status->value,
                 'label' => $this->status->label(),
+                // Allowed next states, so the client draws buttons without duplicating the rule.
+                'transitions' => collect(QuoteStatus::cases())
+                    ->filter(fn (QuoteStatus $target): bool => $this->status->canTransitionTo($target))
+                    ->map(fn (QuoteStatus $target): array => ['value' => $target->value, 'label' => $target->label()])
+                    ->values()
+                    ->all(),
             ],
             'issue_date' => $this->issue_date->toDateString(),
             'valid_until' => $this->valid_until->toDateString(),

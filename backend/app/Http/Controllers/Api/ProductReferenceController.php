@@ -29,7 +29,7 @@ class ProductReferenceController extends Controller
             })
             ->when($request->boolean('active'), fn ($query) => $query->where('active', true))
             ->orderBy('code')
-            ->paginate(15)
+            ->paginate(min(max($request->integer('per_page', 15), 1), 100))
             ->withQueryString();
 
         return ProductReferenceResource::collection($references);

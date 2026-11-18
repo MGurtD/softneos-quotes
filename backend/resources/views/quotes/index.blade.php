@@ -4,6 +4,7 @@
             <p class="eyebrow">Àrea de clients</p>
             <h1 class="h2 mb-0">Pressupostos</h1>
         </div>
+        <a class="btn btn-accent" href="{{ route('quotes.create') }}">Nou pressupost</a>
     </div>
 
     {{-- Angular custom element (frontend/src/app/features/quotes/quote-list). --}}

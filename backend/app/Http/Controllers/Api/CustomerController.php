@@ -14,7 +14,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class CustomerController extends Controller
 {
     /**
-     * Paginated list. ?q= searches name, tax id and city.
+     * Paginated list. ?q= searches name, tax id and city; ?per_page= up to 100 (for selects).
      */
     public function index(Request $request): AnonymousResourceCollection
     {
@@ -27,7 +27,7 @@ class CustomerController extends Controller
                 });
             })
             ->orderBy('name')
-            ->paginate(15)
+            ->paginate(min(max($request->integer('per_page', 15), 1), 100))
             ->withQueryString();
 
         return CustomerResource::collection($customers);
