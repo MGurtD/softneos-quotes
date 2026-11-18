@@ -14,6 +14,16 @@ Este documento es a la vez la especificación que lee Claude Code y tu guía de 
 
 Regla de oro: **no avances de fase sin poder dibujar en una servilleta qué ficheros ha tocado y por qué.** En la revisión en directo te pedirán cambios. Lo que te salvará es saber por qué capas pasa cada cambio, no recordar el código.
 
+## Correcciones de alcance (18-11-2026)
+
+Contrastada la SPEC con el enunciado literal (`docs/ENUNCIAT.md`), prevalecen estas decisiones sobre lo que diga el resto del documento:
+
+- **Empresa:** SoftNeos, con textos propios. Se toma su paleta y tipografía para que resulte familiar, pero no se copian eslóganes, productos ni maquetación de sus webs.
+- **Web corporativa en Blade: una sola página** (hero, quiénes somos, módulos de la Suite, nuevo módulo de presupuestos, contacto) en lugar de tres. Sustituye a las rutas `/suite` y `/contacto`.
+- **Contenido desde base de datos en la parte pública:** los módulos de la Suite salen de la tabla `suite_modules`. El enunciado lo valora «de manera important» y debe verse sin iniciar sesión.
+- **Blade:** web corporativa, login y vista imprimible. **Angular:** gestión de presupuestos (sin cambios).
+- **Idioma:** toda la interfaz en catalán.
+
 ## Visión y alcance
 
 Web corporativa de SoftNeos con una landing pública en Blade y un área privada en Angular para gestionar presupuestos de clientes, como módulo ligado a SoftNeos Suite.
