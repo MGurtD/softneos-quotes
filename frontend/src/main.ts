@@ -7,6 +7,8 @@ import { createApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { QuoteEditor } from './app/features/quotes/quote-editor/quote-editor';
 import { QuoteList } from './app/features/quotes/quote-list/quote-list';
+import { CustomerList } from './app/features/customers/customer-list/customer-list';
+import { ReferenceList } from './app/features/references/reference-list/reference-list';
 
 /**
  * There is no root component: Laravel renders every page with Blade and
@@ -16,6 +18,8 @@ import { QuoteList } from './app/features/quotes/quote-list/quote-list';
 const elements: Record<string, Type<unknown>> = {
   'sn-quote-list': QuoteList,
   'sn-quote-editor': QuoteEditor,
+  'sn-customer-list': CustomerList,
+  'sn-reference-list': ReferenceList,
 };
 
 registerLocaleData(localeCa);

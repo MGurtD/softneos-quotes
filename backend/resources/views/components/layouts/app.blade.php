@@ -32,6 +32,16 @@
                                href="{{ route('quotes.index') }}"
                                @if (request()->routeIs('quotes.*')) aria-current="page" @endif>Pressupostos</a>
                         </li>
+                        <li class="nav-item">
+                            <a @class(['nav-link', 'active' => request()->routeIs('customers.*')])
+                               href="{{ route('customers.index') }}"
+                               @if (request()->routeIs('customers.*')) aria-current="page" @endif>Clients</a>
+                        </li>
+                        <li class="nav-item">
+                            <a @class(['nav-link', 'active' => request()->routeIs('references.*')])
+                               href="{{ route('references.index') }}"
+                               @if (request()->routeIs('references.*')) aria-current="page" @endif>Referències</a>
+                        </li>
                     </ul>
                     <div class="d-flex align-items-center gap-3">
                         <span class="small text-secondary">{{ auth()->user()->name }}</span>

@@ -1,0 +1,143 @@
+<div class="row g-4">
+  <div class="col-lg-8">
+    <label class="visually-hidden" for="customer-search">Cerca clients</label>
+    <div class="input-group mb-3">
+      <span class="input-group-text" aria-hidden="true"><i class="bi bi-search"></i></span>
+      <input id="customer-search" type="search" class="form-control" placeholder="Cerca per nom, NIF o població…"
+             [formControl]="search">
+    </div>
+
+    @if (customers.error()) {
+      <div class="alert alert-danger" role="alert">No s’han pogut carregar els clients. Torna-ho a provar.</div>
+    } @else if (shown(); as result) {
+      <div class="table-responsive catalog-table" [attr.aria-busy]="customers.isLoading()">
+        <table class="table table-hover align-middle mb-0">
+          <caption class="visually-hidden">Llistat de clients</caption>
+          <thead>
+            <tr>
+              <th scope="col">Nom</th>
+              <th scope="col">NIF</th>
+              <th scope="col">Població</th>
+              <th scope="col">Correu</th>
+              <th scope="col"><span class="visually-hidden">Accions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (customer of result.data; track customer.id) {
+              <tr [class.table-active]="editing()?.id === customer.id">
+                <td class="fw-semibold">{{ customer.name }}</td>
+                <td class="text-nowrap">{{ customer.tax_id }}</td>
+                <td>{{ customer.city }}</td>
+                <td>{{ customer.email }}</td>
+                <td class="text-end">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" (click)="edit(customer)"
+                          [title]="'Edita ' + customer.name" [attr.aria-label]="'Edita ' + customer.name">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="text-center text-secondary py-4">Cap client coincideix amb la cerca.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="d-flex justify-content-between align-items-center mt-2" aria-label="Paginació de clients">
+        <span class="small text-secondary">{{ result.meta.total }} {{ result.meta.total === 1 ? 'client' : 'clients' }}</span>
+        @if (result.meta.last_page > 1) {
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm" aria-label="Pàgina anterior"
+                    [disabled]="page() <= 1" (click)="page.set(page() - 1)">
+              <i class="bi bi-chevron-left" aria-hidden="true"></i>
+            </button>
+            <span class="small">{{ result.meta.current_page }} / {{ result.meta.last_page }}</span>
+            <button type="button" class="btn btn-outline-secondary btn-sm" aria-label="Pàgina següent"
+                    [disabled]="page() >= result.meta.last_page" (click)="page.set(page() + 1)">
+              <i class="bi bi-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        }
+      </nav>
+    } @else {
+      <p class="text-secondary" role="status">Carregant clients…</p>
+    }
+  </div>
+
+  <div class="col-lg-4">
+    <section class="card catalog-form" aria-labelledby="customer-form-title">
+      <div class="card-body p-3 p-lg-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 id="customer-form-title" class="h6 mb-0">{{ editing() ? 'Edita el client' : 'Nou client' }}</h2>
+          @if (editing()) {
+            <button type="button" class="btn btn-link btn-sm p-0" (click)="startNew()">
+              <i class="bi bi-plus-lg" aria-hidden="true"></i> Nou client
+            </button>
+          }
+        </div>
+
+        @for (error of errors(); track $index) {
+          <div class="alert alert-danger py-2 small" role="alert">{{ error }}</div>
+        }
+        @if (notice()) {
+          <div class="alert alert-success py-2 small" role="status">{{ notice() }}</div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="save()" class="row g-2" novalidate>
+          <div class="col-12">
+            <label class="form-label small" for="c-name">Nom</label>
+            <input id="c-name" class="form-control form-control-sm" formControlName="name"
+                   [class.is-invalid]="fieldError(form.controls.name)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.name) }}</div>
+          </div>
+          <div class="col-sm-6 col-lg-12 col-xl-6">
+            <label class="form-label small" for="c-tax">NIF</label>
+            <input id="c-tax" class="form-control form-control-sm" formControlName="tax_id"
+                   [class.is-invalid]="fieldError(form.controls.tax_id)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.tax_id) }}</div>
+          </div>
+          <div class="col-sm-6 col-lg-12 col-xl-6">
+            <label class="form-label small" for="c-phone">Telèfon</label>
+            <input id="c-phone" type="tel" class="form-control form-control-sm" formControlName="phone"
+                   [class.is-invalid]="fieldError(form.controls.phone)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.phone) }}</div>
+          </div>
+          <div class="col-12">
+            <label class="form-label small" for="c-email">Correu electrònic</label>
+            <input id="c-email" type="email" class="form-control form-control-sm" formControlName="email"
+                   [class.is-invalid]="fieldError(form.controls.email)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.email) }}</div>
+          </div>
+          <div class="col-12">
+            <label class="form-label small" for="c-address">Adreça</label>
+            <input id="c-address" class="form-control form-control-sm" formControlName="address"
+                   [class.is-invalid]="fieldError(form.controls.address)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.address) }}</div>
+          </div>
+          <div class="col-8">
+            <label class="form-label small" for="c-city">Població</label>
+            <input id="c-city" class="form-control form-control-sm" formControlName="city"
+                   [class.is-invalid]="fieldError(form.controls.city)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.city) }}</div>
+          </div>
+          <div class="col-4">
+            <label class="form-label small" for="c-postal">CP</label>
+            <input id="c-postal" class="form-control form-control-sm" formControlName="postal_code"
+                   [class.is-invalid]="fieldError(form.controls.postal_code)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.postal_code) }}</div>
+          </div>
+          <div class="col-12 d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="saving()">
+              <i class="bi bi-check2" aria-hidden="true"></i> Desa
+            </button>
+            @if (editing()) {
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="startNew()">Cancel·la</button>
+            }
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+</div>

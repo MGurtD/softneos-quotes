@@ -87,6 +87,17 @@ export interface ProductReference {
   unit: string;
   unit_price: string;
   vat_type_id: number;
+  vat_type?: VatType;
+  active: boolean;
+}
+
+/** Body of POST/PUT /api/product-references. */
+export interface ProductReferencePayload {
+  code: string;
+  description: string;
+  unit: string;
+  unit_price: number;
+  vat_type_id: number;
   active: boolean;
 }
 
@@ -94,7 +105,15 @@ export interface Customer {
   id: number;
   name: string;
   tax_id: string;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+  postal_code: string | null;
 }
+
+/** Body of POST/PUT /api/customers. Empty strings become null in Laravel (ConvertEmptyStringsToNull). */
+export type CustomerPayload = { [K in keyof Omit<Customer, 'id'>]: string };
 
 /** Laravel 422 body: { message, errors: { field: [messages] } }. */
 export interface ValidationErrorBody {

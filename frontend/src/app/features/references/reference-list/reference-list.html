@@ -1,0 +1,150 @@
+<div class="row g-4">
+  <div class="col-lg-8">
+    <label class="visually-hidden" for="reference-search">Cerca referències</label>
+    <div class="input-group mb-3">
+      <span class="input-group-text" aria-hidden="true"><i class="bi bi-search"></i></span>
+      <input id="reference-search" type="search" class="form-control" placeholder="Cerca per codi o descripció…"
+             [formControl]="search">
+    </div>
+
+    @if (references.error()) {
+      <div class="alert alert-danger" role="alert">No s’han pogut carregar les referències. Torna-ho a provar.</div>
+    } @else if (shown(); as result) {
+      <div class="table-responsive catalog-table" [attr.aria-busy]="references.isLoading()">
+        <table class="table table-hover align-middle mb-0">
+          <caption class="visually-hidden">Llistat de referències</caption>
+          <thead>
+            <tr>
+              <th scope="col">Codi</th>
+              <th scope="col">Descripció</th>
+              <th scope="col" class="text-end">Preu</th>
+              <th scope="col">IVA</th>
+              <th scope="col">Estat</th>
+              <th scope="col"><span class="visually-hidden">Accions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (reference of result.data; track reference.id) {
+              <tr [class.table-active]="editing()?.id === reference.id">
+                <td class="fw-semibold text-nowrap">{{ reference.code }}</td>
+                <td>{{ reference.description }}</td>
+                <td class="text-end text-nowrap">{{ reference.unit_price | currency: 'EUR' }} / {{ reference.unit }}</td>
+                <td class="text-nowrap">{{ reference.vat_type?.name }}</td>
+                <td>
+                  @if (reference.active) {
+                    <span class="badge text-bg-success">Activa</span>
+                  } @else {
+                    <span class="badge text-bg-secondary">De baixa</span>
+                  }
+                </td>
+                <td class="text-end">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" (click)="edit(reference)"
+                          [title]="'Edita ' + reference.code" [attr.aria-label]="'Edita ' + reference.code">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center text-secondary py-4">Cap referència coincideix amb la cerca.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="d-flex justify-content-between align-items-center mt-2" aria-label="Paginació de referències">
+        <span class="small text-secondary">{{ result.meta.total }} {{ result.meta.total === 1 ? 'referència' : 'referències' }}</span>
+        @if (result.meta.last_page > 1) {
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm" aria-label="Pàgina anterior"
+                    [disabled]="page() <= 1" (click)="page.set(page() - 1)">
+              <i class="bi bi-chevron-left" aria-hidden="true"></i>
+            </button>
+            <span class="small">{{ result.meta.current_page }} / {{ result.meta.last_page }}</span>
+            <button type="button" class="btn btn-outline-secondary btn-sm" aria-label="Pàgina següent"
+                    [disabled]="page() >= result.meta.last_page" (click)="page.set(page() + 1)">
+              <i class="bi bi-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        }
+      </nav>
+    } @else {
+      <p class="text-secondary" role="status">Carregant referències…</p>
+    }
+  </div>
+
+  <div class="col-lg-4">
+    <section class="card catalog-form" aria-labelledby="reference-form-title">
+      <div class="card-body p-3 p-lg-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 id="reference-form-title" class="h6 mb-0">{{ editing() ? 'Edita la referència' : 'Nova referència' }}</h2>
+          @if (editing()) {
+            <button type="button" class="btn btn-link btn-sm p-0" (click)="startNew()">
+              <i class="bi bi-plus-lg" aria-hidden="true"></i> Nova referència
+            </button>
+          }
+        </div>
+
+        @for (error of errors(); track $index) {
+          <div class="alert alert-danger py-2 small" role="alert">{{ error }}</div>
+        }
+        @if (notice()) {
+          <div class="alert alert-success py-2 small" role="status">{{ notice() }}</div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="save()" class="row g-2" novalidate>
+          <div class="col-12">
+            <label class="form-label small" for="r-code">Codi</label>
+            <input id="r-code" class="form-control form-control-sm" formControlName="code"
+                   [class.is-invalid]="fieldError(form.controls.code)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.code) }}</div>
+          </div>
+          <div class="col-12">
+            <label class="form-label small" for="r-description">Descripció</label>
+            <input id="r-description" class="form-control form-control-sm" formControlName="description"
+                   [class.is-invalid]="fieldError(form.controls.description)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.description) }}</div>
+          </div>
+          <div class="col-8">
+            <label class="form-label small" for="r-price">Preu unitari (€)</label>
+            <input id="r-price" type="number" min="0" step="0.01" class="form-control form-control-sm text-end"
+                   formControlName="unit_price" [class.is-invalid]="fieldError(form.controls.unit_price)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.unit_price) }}</div>
+          </div>
+          <div class="col-4">
+            <label class="form-label small" for="r-unit">Unitat</label>
+            <input id="r-unit" class="form-control form-control-sm" formControlName="unit"
+                   [class.is-invalid]="fieldError(form.controls.unit)">
+            <div class="invalid-feedback">{{ fieldError(form.controls.unit) }}</div>
+          </div>
+          <div class="col-12">
+            <label class="form-label small" for="r-vat">Tipus d’IVA</label>
+            <select id="r-vat" class="form-select form-select-sm" formControlName="vat_type_id"
+                    [class.is-invalid]="fieldError(form.controls.vat_type_id)">
+              <option [ngValue]="null" disabled>Tria un tipus…</option>
+              @for (vat of vatTypes.value()?.data ?? []; track vat.id) {
+                <option [ngValue]="vat.id">{{ vat.name }}</option>
+              }
+            </select>
+            <div class="invalid-feedback">{{ fieldError(form.controls.vat_type_id) }}</div>
+          </div>
+          <div class="col-12">
+            <div class="form-check form-switch mt-1">
+              <input id="r-active" type="checkbox" role="switch" class="form-check-input" formControlName="active">
+              <label class="form-check-label small" for="r-active">Activa (disponible als pressupostos)</label>
+            </div>
+          </div>
+          <div class="col-12 d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="saving()">
+              <i class="bi bi-check2" aria-hidden="true"></i> Desa
+            </button>
+            @if (editing()) {
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="startNew()">Cancel·la</button>
+            }
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+</div>

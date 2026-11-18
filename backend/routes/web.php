@@ -21,4 +21,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/pressupostos/nou', [QuotePageController::class, 'create'])->name('quotes.create');
     Route::get('/pressupostos/{quote}', [QuotePageController::class, 'edit'])->whereNumber('quote')->name('quotes.edit');
     Route::get('/quotes/{quote}/print', QuotePrintController::class)->name('quotes.print');
+
+    Route::view('/clients', 'customers.index')->name('customers.index');
+    Route::view('/referencies', 'references.index')->name('references.index');
 });
