@@ -1,6 +1,6 @@
 # SoftNeos Presupuestos
 
-Monorepo: `backend/` (Laravel 13, PHP 8.3+, SQLite, Sanctum) y `frontend/` (Angular 22, Bootstrap 5.3, SCSS).
+Monorepo: `backend/` (Laravel 13, PHP 8.3+, SQLite, Sanctum) y `frontend/` (Angular 22 como Web Components dentro de vistas Blade, Bootstrap 5.3, SCSS).
 La especificación completa está en `docs/SPEC.md`. Léela antes de cada fase.
 
 ## Modo de trabajo (obligatorio)
@@ -19,5 +19,5 @@ La especificación completa está en `docs/SPEC.md`. Léela antes de cada fase.
 - Dinero: columnas decimal, cast decimal:2, nunca float.
 
 ## Comandos
-- Backend: `cd backend && php artisan serve` | `php artisan test` | `php artisan migrate:fresh --seed`
-- Frontend: `cd frontend && npm start` (ng serve con proxy a :8000) | `npm test` | `npm run build`
+- Backend: `cd backend && php artisan serve` | `npm run dev` (Vite) | `php artisan test` | `php artisan migrate:fresh --seed`
+- Frontend: `cd frontend && npm start` (ng build --watch hacia backend/public/angular) | `npm run build`
