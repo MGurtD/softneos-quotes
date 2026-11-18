@@ -1,46 +1,46 @@
 # SoftNeos Pressupostos
 
-> Web corporativa de SoftNeos amb Blade i un mòdul de pressupostos fet amb Angular, dins de les mateixes pàgines de Laravel.
+> Web corporativa de SoftNeos feta amb Blade i una àrea de clients amb pantalles Angular, dins de les mateixes pàgines de Laravel.
 
 Prova tècnica «Disseny + programació» (enunciat literal a [`docs/ENUNCIAT.md`](docs/ENUNCIAT.md)).
 
 ![Portada](docs/screenshots/01-portada.jpg)
 
-## Descripción
+## Descripció
 
-- **Web corporativa (Blade):** una sola página con hero, quiénes somos, módulos de SoftNeos Suite y contacto. **Los módulos se leen de la base de datos** (tabla `suite_modules`), sin necesidad de iniciar sesión.
-- **Área de clientes (Blade + Angular):** login con sesión de Laravel, gestión de presupuestos y mantenimiento de clientes y referencias. Las pantallas interactivas son **componentes Angular registrados como Web Components** (`<sn-quote-list>`, `<sn-quote-editor>`, `<sn-customer-list>`, `<sn-reference-list>`) que Blade inserta como cualquier etiqueta HTML.
-- **Vista imprimible (Blade):** presupuesto en A4 con desglose de IVA, listo para Ctrl+P.
+- **Web corporativa (Blade):** una sola pàgina amb capçalera destacada, qui som, mòduls de SoftNeos Suite i contacte. **Els mòduls es llegeixen de la base de dades** (taula `suite_modules`), sense haver d'iniciar sessió.
+- **Àrea de clients (Blade + Angular):** inici de sessió amb la sessió de Laravel, gestió de pressupostos i manteniment de clients i referències. Les pantalles interactives són **components Angular registrats com a Web Components** (`<sn-quote-list>`, `<sn-quote-editor>`, `<sn-customer-list>`, `<sn-reference-list>`) que Blade insereix com qualsevol etiqueta HTML.
+- **Vista imprimible (Blade):** pressupost en format A4 amb el desglossament d'IVA, preparat per a Ctrl+P.
 
-Toda la interfaz está en catalán. Los datos de demo son de talleres ficticios del sector metal.
+Tota la interfície és en català. Les dades de demostració són de tallers fictius del sector del metall.
 
-## Stack
+## Tecnologies
 
-| Pieza | Versión |
+| Peça | Versió |
 | --- | --- |
 | Laravel | 13.x |
-| PHP | 8.3 o superior (desarrollado con 8.5) |
-| Angular | 22.2 (`@angular/elements`, signals, zoneless) |
-| Bootstrap | 5.3 personalizado con SCSS |
-| Base de datos | SQLite |
-| Autenticación | Sesión de Laravel + Sanctum en modo SPA para `/api` |
+| PHP | 8.3 o superior (desenvolupat amb 8.5) |
+| Angular | 22.2 (`@angular/elements`, signals, sense zone.js) |
+| Bootstrap | 5.3 personalitzat amb SCSS |
+| Base de dades | SQLite |
+| Autenticació | Sessió de Laravel + Sanctum en mode SPA per a `/api` |
 | Tests | PHPUnit (backend) |
 
 ## Arquitectura
 
-Blade es el motor de plantillas de toda la web; Angular aporta las vistas interactivas dentro de esas plantillas. Un solo servidor, un solo origen y una sola sesión: sin proxy, sin CORS.
+Blade és el motor de plantilles de tota la web; Angular aporta les vistes interactives dins d'aquestes plantilles. Un sol servidor, un sol origen i una sola sessió: sense proxy i sense CORS.
 
 ```mermaid
 flowchart TB
     subgraph Browser["Navegador"]
-        HTML["HTML de Blade<br/>portada · login · pressupostos · impressió"]
-        WC["Web Components Angular<br/>presupuestos · clientes · referencias"]
+        HTML["HTML de Blade<br/>portada · login · àrea de clients · impressió"]
+        WC["Web Components Angular<br/>pressupostos · clients · referències"]
     end
 
     subgraph Laravel["Laravel 13 · backend/ (:8000)"]
         direction TB
         R["1 · Entrada HTTP<br/>routes/web.php (HTML) · routes/api.php (JSON)<br/>web · auth · auth:sanctum · throttle"]
-        P["2 · Presentació<br/>FormRequests · Controllers prims · Blade · API Resources"]
+        P["2 · Presentació<br/>FormRequests · controladors prims · Blade · API Resources"]
         D["3 · Domini<br/>QuoteService · QuoteCalculator · QuoteNumberGenerator · QuoteStatus"]
         M["4 · Dades<br/>Models Eloquent · SQLite"]
         R --> P --> D --> M
@@ -54,7 +54,7 @@ flowchart TB
     T -.-> WC
 ```
 
-Flujo al guardar un presupuesto:
+Flux en desar un pressupost:
 
 ```mermaid
 sequenceDiagram
@@ -67,24 +67,24 @@ sequenceDiagram
     Note over MW: CSRF (419) · auth:sanctum (401)
     MW->>C: SaveQuoteRequest valida (422)
     C->>S: update()
-    Note over S: solo borradores (422)
-    S->>DB: DB::transaction: cabecera + líneas
+    Note over S: només esborranys (422)
+    S->>DB: DB::transaction: capçalera + línies
     DB-->>S: COMMIT
     S-->>C: Quote
-    C-->>A: 200 QuoteResource con totales calculados en el servidor
+    C-->>A: 200 QuoteResource amb els totals calculats al servidor
 ```
 
 ```text
 softneos-quotes/
-├── backend/     Laravel: Blade, API, dominio, tests
-├── frontend/    Angular: componentes compilados como Web Components
-├── design/      _tokens.scss compartido por Vite (Blade) y Angular CLI
-└── docs/        Enunciado, especificación, uso de IA y capturas
+├── backend/     Laravel: Blade, API, domini i tests
+├── frontend/    Angular: components compilats com a Web Components
+├── design/      _tokens.scss compartit per Vite (Blade) i Angular CLI
+└── docs/        Enunciat, especificació, ús de la IA i captures
 ```
 
-## Instalación
+## Instal·lació
 
-Requisitos: PHP 8.3+ con las extensiones `pdo_sqlite`, `bcmath`, `intl`, `mbstring` y `fileinfo`; Composer; Node.js 22+ y npm.
+Requisits: PHP 8.3 o superior amb les extensions `pdo_sqlite`, `bcmath`, `intl`, `mbstring` i `fileinfo`; Composer; Node.js 22 o superior i npm.
 
 ```bash
 git clone https://github.com/MGurtD/softneos-quotes.git
@@ -92,7 +92,7 @@ cd softneos-quotes/backend
 composer install
 cp .env.example .env
 php artisan key:generate
-php -r "touch('database/database.sqlite');"   # fichero SQLite vacío (Windows, macOS y Linux)
+php -r "touch('database/database.sqlite');"   # fitxer SQLite buit (Windows, macOS i Linux)
 php artisan migrate --seed
 npm install && npm run build    # CSS de Blade (Bootstrap + tokens)
 cd ../frontend
@@ -101,14 +101,17 @@ cd ../backend
 php artisan serve
 ```
 
-Abre <http://localhost:8000>.
+Obre <http://localhost:8000>.
 
-## Uso
+## Ús
 
-- **Credenciales demo:** `demo@softneos.test` / `password` (botón «Accés clients»).
-- **Rutas principales:** `/` portada · `/login` · `/pressupostos` listado · `/pressupostos/nou` y `/pressupostos/{id}` editor · `/quotes/{id}/print` vista imprimible · `/clients` y `/referencies` catálogos (búsqueda, alta y edición).
-- **Modo desarrollo** (tres terminales): `php artisan serve` y `npm run dev` en `backend/`; `npm start` en `frontend/` (recompila Angular al guardar).
-- **Reiniciar los datos de demo:** `php artisan migrate:fresh --seed` (los datos son siempre los mismos: Faker con semilla fija).
+- **Credencials de demostració:** `demo@softneos.test` / `password` (botó «Accés clients»).
+- **Rutes principals:**
+  - `/` portada · `/login` inici de sessió
+  - `/pressupostos` llistat · `/pressupostos/nou` i `/pressupostos/{id}` editor · `/quotes/{id}/print` vista imprimible
+  - `/clients` i `/referencies` catàlegs (cerca, alta i edició)
+- **Mode desenvolupament** (tres terminals): `php artisan serve` i `npm run dev` a `backend/`; `npm start` a `frontend/` (recompila Angular en desar).
+- **Restablir les dades de demostració:** `php artisan migrate:fresh --seed` (les dades són sempre les mateixes: Faker amb llavor fixa).
 
 ## Tests
 
@@ -117,29 +120,29 @@ cd backend
 php artisan test
 ```
 
-19 tests: cálculo de totales e IVA (unitarios), máquina de estados, numeración correlativa por año, API de presupuestos (401, 422, transiciones, filtros), login, portada con contenido de base de datos y vista imprimible.
+19 tests: càlcul de totals i IVA (unitaris), màquina d'estats, numeració correlativa per any, API de pressupostos (401, 422, transicions i filtres), inici de sessió, portada amb contingut de la base de dades i vista imprimible.
 
-## Decisiones técnicas
+## Decisions tècniques
 
-- **Blade + Angular Elements en lugar de una SPA separada.** El enunciado pide la web «a través de views/blades de Laravel, però també a través de views html que utilitzin Angular». Blade renderiza y protege cada página (`auth`); Angular solo da vida a las partes interactivas. Resultado: un solo origen, la cookie de sesión y el token XSRF funcionan sin configuración.
-- **Errores de validación por campo.** `core/form-errors.ts` coloca cada mensaje 422 de Laravel en su control del Reactive Form (por ejemplo, NIF duplicado), así la regla `unique` del servidor se ve donde toca.
-- **Contenido público desde la base de datos.** Los módulos de la portada vienen de `suite_modules`: añadir un módulo es un cambio de datos, no de código.
-- **Dinero exacto.** Columnas `decimal`, cast `decimal:2` y cálculo con bcmath, redondeando *half up* por línea. `QuoteCalculator` es la única fuente de verdad: la API, la vista imprimible y Angular muestran el mismo total. Angular solo previsualiza mientras se edita.
-- **Snapshots en las líneas.** Cada línea copia descripción, precio, tipo de IVA y porcentaje al crearse: un cambio posterior en el catálogo o en la ley no altera presupuestos emitidos.
-- **Reglas de negocio fuera de los controllers.** `QuoteStatus::canTransitionTo()` decide las transiciones; `QuoteService` aplica «solo borradores editables» y guarda cabecera y líneas en una transacción. Los errores de regla responden 422 con el mismo formato que la validación.
-- **Mass assignment.** `number` y `status` no son `#[Fillable]`: el servidor asigna el número y el estado solo cambia por `PATCH /status`.
-- **Login seguro.** `Auth::attempt`, `session()->regenerate()`, mensaje de error genérico y límite de 5 intentos por minuto por email + IP.
-- **Diseño.** Paleta y tipografía de SoftNeos en `design/_tokens.scss`, importado antes de Bootstrap. Mejora de accesibilidad: texto azul noche sobre lima (contraste 9,28:1 frente al 1,64:1 del blanco).
-- **Fuera de alcance (decisión consciente):** registro de usuarios, roles, PDF, emails, multiempresa y despliegue. Clientes y referencias se crean y editan, pero no se borran: un presupuesto emitido los referencia (una referencia se da de baja con `active`).
+- **Blade + Angular Elements en lloc d'una SPA separada.** L'enunciat demana la web «a través de views/blades de Laravel, però també a través de views html que utilitzin Angular». Blade renderitza i protegeix cada pàgina (`auth`); Angular només dona vida a les parts interactives. Resultat: un sol origen, i la cookie de sessió i el token XSRF funcionen sense configuració.
+- **Contingut públic des de la base de dades.** Els mòduls de la portada surten de `suite_modules`: afegir-ne un és un canvi de dades, no de codi.
+- **Diners exactes.** Columnes `decimal`, cast `decimal:2` i càlcul amb bcmath, arrodonint *half up* per línia. `QuoteCalculator` és l'única font de veritat: l'API, la vista imprimible i Angular mostren el mateix total. Angular només en fa una previsualització mentre s'edita.
+- **Còpies (snapshots) a les línies.** Cada línia copia la descripció, el preu, el tipus d'IVA i el percentatge en crear-se: un canvi posterior al catàleg o a la llei no altera els pressupostos emesos.
+- **Regles de negoci fora dels controladors.** `QuoteStatus::canTransitionTo()` decideix les transicions; `QuoteService` aplica «només els esborranys són editables» i desa la capçalera i les línies en una transacció. Els errors de regla responen 422 amb el mateix format que la validació.
+- **Errors de validació per camp.** `core/form-errors.ts` col·loca cada missatge 422 de Laravel al seu control del Reactive Form (per exemple, un NIF duplicat), de manera que la regla `unique` del servidor es veu al camp que toca.
+- **Assignació massiva.** `number` i `status` no són `#[Fillable]`: el servidor assigna el número, i l'estat només canvia amb `PATCH /status`.
+- **Inici de sessió segur.** `Auth::attempt`, `session()->regenerate()`, missatge d'error genèric i límit de 5 intents per minut per correu + IP.
+- **Disseny.** Paleta i tipografia de SoftNeos a `design/_tokens.scss`, importat abans de Bootstrap. Escala tipogràfica compacta (base de 15 px, perquè Poppins es llegeix gran) i taules de dades amb estils globals compartits per Blade i Angular. Millora d'accessibilitat: text blau nit sobre llima (contrast de 9,28:1, davant de l'1,64:1 del blanc).
+- **Fora d'abast (decisió conscient):** registre d'usuaris, rols, PDF, correus electrònics, multiempresa i desplegament. Els clients i les referències es creen i s'editen, però no s'esborren: un pressupost emès hi fa referència (una referència es dona de baixa amb `active`).
 
-## Capturas
+## Captures
 
 | | |
 | --- | --- |
-| ![Portada](docs/screenshots/01-portada.jpg) | ![Login](docs/screenshots/02-login.jpg) |
-| ![Listado de presupuestos](docs/screenshots/03-llistat-pressupostos.jpg) | ![Editor de un borrador](docs/screenshots/04-editor-esborrany.jpg) |
-| ![Editor de un presupuesto enviado](docs/screenshots/05-editor-enviat.jpg) | ![Vista imprimible](docs/screenshots/06-vista-imprimible.jpg) |
+| ![Portada](docs/screenshots/01-portada.jpg) | ![Inici de sessió](docs/screenshots/02-login.jpg) |
+| ![Llistat de pressupostos](docs/screenshots/03-llistat-pressupostos.jpg) | ![Editor d'un esborrany](docs/screenshots/04-editor-esborrany.jpg) |
+| ![Editor d'un pressupost enviat](docs/screenshots/05-editor-enviat.jpg) | ![Vista imprimible](docs/screenshots/06-vista-imprimible.jpg) |
 
-## Uso de IA
+## Ús de la IA
 
-Declaración completa (herramientas, para qué y prompts representativos) en [`docs/AI_USAGE.md`](docs/AI_USAGE.md).
+Declaració completa (eines, per a què s'han fet servir i prompts representatius) a [`docs/AI_USAGE.md`](docs/AI_USAGE.md).
