@@ -1,0 +1,52 @@
+// =============================================================================
+// SoftNeos design tokens — the single source of brand values.
+// Imported by Laravel (Vite) and Angular BEFORE Bootstrap, so these values
+// replace Bootstrap's !default variables at compile time.
+//
+// Palette taken from softneos.com and suite.softneos.com (Nov 2026). Same
+// colours, with two accessibility fixes: dark text on lime buttons and a
+// darker lime for text (contrast ratios against the background in comments).
+// =============================================================================
+
+// --- Brand palette -----------------------------------------------------------
+$brand-lime: #c3d500;       // signature lime (buttons, accents, underlines)
+$brand-lime-text: #5f6800;  // lime for text on white: 6.06:1 (pure lime is 1.64:1)
+$brand-blue: #003d84;       // Suite headings and links: 10.50:1 on white
+$brand-navy: #002551;       // Suite footer; text on lime: 9.28:1
+$brand-green: #007747;      // end of the Suite hero gradient
+$brand-ink: #232323;        // body text
+$brand-gray: #616161;       // secondary text: 6.2:1 on white
+$brand-surface: #f7f7f7;    // light section background
+
+$brand-gradient: linear-gradient(135deg, $brand-blue 0%, $brand-green 100%);
+
+// --- Bootstrap overrides -----------------------------------------------------
+$primary: $brand-blue;
+$secondary: $brand-gray;
+$success: $brand-green;
+$dark: $brand-navy;
+$light: $brand-surface;
+
+$body-color: $brand-ink;
+$link-color: $brand-blue;
+$headings-color: $brand-blue;
+
+// Buttons and badges on lime pick the dark contrast colour automatically.
+$color-contrast-dark: $brand-navy;
+$min-contrast-ratio: 4.5;
+
+// Typography: Poppins, as on the Suite site, with heavier headings.
+$font-family-sans-serif: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+$headings-font-weight: 600;
+$font-weight-semibold: 600;
+
+// Shape: soft corners instead of the current square buttons.
+$border-radius: 0.375rem;
+$border-radius-sm: 0.25rem;
+$border-radius-lg: 0.75rem;
+$box-shadow-sm: 0 1px 2px rgba($brand-navy, 0.08);
+$box-shadow: 0 0.5rem 1.5rem rgba($brand-navy, 0.1);
+
+// Visible focus ring in brand lime (keyboard navigation).
+$focus-ring-color: rgba($brand-lime, 0.6);
+$input-btn-focus-color: $focus-ring-color;

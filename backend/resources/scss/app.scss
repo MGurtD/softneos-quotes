@@ -1,0 +1,20 @@
+// Order matters: Bootstrap's variables are !default, so ours must be defined
+// first. Bootstrap functions come before the tokens only so map-merge and
+// friends are available below.
+@import 'bootstrap/scss/functions';
+@import 'tokens';
+@import 'bootstrap/scss/variables';
+
+// Extra theme colour: .btn-accent, .bg-accent, .text-bg-accent...
+$theme-colors: map-merge($theme-colors, ('accent': $brand-lime));
+
+@import 'bootstrap/scss/bootstrap';
+
+// --- Base ---------------------------------------------------------------------
+.text-accent {
+    color: $brand-lime-text !important;
+}
+
+.bg-brand-gradient {
+    background: $brand-gradient;
+}
