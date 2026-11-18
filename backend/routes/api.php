@@ -1,8 +1,18 @@
 <?php
 
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\VatTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+/*
+ * Every API route needs a session: the Angular SPA authenticates with the
+ * Sanctum cookie (statefulApi in bootstrap/app.php).
+ */
+Route::middleware('auth:sanctum')->group(function (): void {
+    Route::get('/user', fn (Request $request) => $request->user());
+
+    Route::get('/vat-types', VatTypeController::class);
+
+    Route::apiResource('customers', CustomerController::class)->except('destroy');
+});
