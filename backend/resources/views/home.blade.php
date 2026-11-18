@@ -13,7 +13,7 @@
                     <p class="lead text-white-75 mb-4">Programari de gestió per a la petita i mitjana indústria: producció, costos, fitxatge i, ara, també pressupostos. Tot al núvol i connectat.</p>
                     <div class="d-flex flex-wrap gap-2">
                         <a class="btn btn-accent btn-lg" href="#moduls">Coneix els mòduls</a>
-                        <a class="btn btn-outline-light btn-lg" href="{{ url('/login') }}">Accés clients</a>
+                        <a class="btn btn-outline-light btn-lg" href="{{ route('login') }}">Accés clients</a>
                     </div>
                 </div>
 
@@ -102,7 +102,7 @@
                         <li>Estats clars: esborrany, enviat, acceptat i rebutjat</li>
                         <li>Vista imprimible per enviar al client</li>
                     </ul>
-                    <a class="btn btn-primary btn-lg" href="{{ url('/login') }}">Entra a l'àrea de clients</a>
+                    <a class="btn btn-primary btn-lg" href="{{ route('login') }}">Entra a l'àrea de clients</a>
                 </div>
             </div>
         </div>

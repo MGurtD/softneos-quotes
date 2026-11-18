@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Requests to /api coming from SANCTUM_STATEFUL_DOMAINS (the Angular SPA)
         // authenticate with the Laravel session cookie instead of API tokens.
         $middleware->statefulApi();
+
+        // A logged-in user who opens /login goes straight to the Angular app.
+        $middleware->redirectUsersTo(fn (): string => config('app.frontend_url'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -25,7 +25,7 @@
                         </li>
                     @endforeach
                     <li class="nav-item ms-md-3 mt-2 mt-md-0">
-                        <a class="btn btn-accent" href="{{ url('/login') }}">Accés clients</a>
+                        <a class="btn btn-accent" href="{{ route('login') }}">Accés clients</a>
                     </li>
                 </ul>
             </div>
