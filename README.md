@@ -92,7 +92,8 @@ cd softneos-quotes/backend
 composer install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate --seed      # crea database/database.sqlite si no existe
+php -r "touch('database/database.sqlite');"   # fichero SQLite vacío (Windows, macOS y Linux)
+php artisan migrate --seed
 npm install && npm run build    # CSS de Blade (Bootstrap + tokens)
 cd ../frontend
 npm install && npm run build    # Angular -> backend/public/angular/main.js
