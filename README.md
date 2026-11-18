@@ -9,7 +9,7 @@ Prova tècnica «Disseny + programació» (enunciat literal a [`docs/ENUNCIAT.md
 ## Descripción
 
 - **Web corporativa (Blade):** una sola página con hero, quiénes somos, módulos de SoftNeos Suite y contacto. **Los módulos se leen de la base de datos** (tabla `suite_modules`), sin necesidad de iniciar sesión.
-- **Área de clientes (Blade + Angular):** login con sesión de Laravel y gestión de presupuestos. Las pantallas interactivas (listado y editor) son **componentes Angular registrados como Web Components** (`<sn-quote-list>`, `<sn-quote-editor>`) que Blade inserta como cualquier etiqueta HTML.
+- **Área de clientes (Blade + Angular):** login con sesión de Laravel, gestión de presupuestos y mantenimiento de clientes y referencias. Las pantallas interactivas son **componentes Angular registrados como Web Components** (`<sn-quote-list>`, `<sn-quote-editor>`, `<sn-customer-list>`, `<sn-reference-list>`) que Blade inserta como cualquier etiqueta HTML.
 - **Vista imprimible (Blade):** presupuesto en A4 con desglose de IVA, listo para Ctrl+P.
 
 Toda la interfaz está en catalán. Los datos de demo son de talleres ficticios del sector metal.
@@ -34,7 +34,7 @@ Blade es el motor de plantillas de toda la web; Angular aporta las vistas intera
 flowchart TB
     subgraph Browser["Navegador"]
         HTML["HTML de Blade<br/>portada · login · pressupostos · impressió"]
-        WC["Web Components Angular<br/>sn-quote-list · sn-quote-editor"]
+        WC["Web Components Angular<br/>presupuestos · clientes · referencias"]
     end
 
     subgraph Laravel["Laravel 13 · backend/ (:8000)"]
@@ -106,7 +106,7 @@ Abre <http://localhost:8000>.
 ## Uso
 
 - **Credenciales demo:** `demo@softneos.test` / `password` (botón «Accés clients»).
-- **Rutas principales:** `/` portada · `/login` · `/pressupostos` listado · `/pressupostos/nou` y `/pressupostos/{id}` editor · `/quotes/{id}/print` vista imprimible.
+- **Rutas principales:** `/` portada · `/login` · `/pressupostos` listado · `/pressupostos/nou` y `/pressupostos/{id}` editor · `/quotes/{id}/print` vista imprimible · `/clients` y `/referencies` catálogos (búsqueda, alta y edición).
 - **Modo desarrollo** (tres terminales): `php artisan serve` y `npm run dev` en `backend/`; `npm start` en `frontend/` (recompila Angular al guardar).
 - **Reiniciar los datos de demo:** `php artisan migrate:fresh --seed` (los datos son siempre los mismos: Faker con semilla fija).
 
@@ -122,6 +122,7 @@ php artisan test
 ## Decisiones técnicas
 
 - **Blade + Angular Elements en lugar de una SPA separada.** El enunciado pide la web «a través de views/blades de Laravel, però també a través de views html que utilitzin Angular». Blade renderiza y protege cada página (`auth`); Angular solo da vida a las partes interactivas. Resultado: un solo origen, la cookie de sesión y el token XSRF funcionan sin configuración.
+- **Errores de validación por campo.** `core/form-errors.ts` coloca cada mensaje 422 de Laravel en su control del Reactive Form (por ejemplo, NIF duplicado), así la regla `unique` del servidor se ve donde toca.
 - **Contenido público desde la base de datos.** Los módulos de la portada vienen de `suite_modules`: añadir un módulo es un cambio de datos, no de código.
 - **Dinero exacto.** Columnas `decimal`, cast `decimal:2` y cálculo con bcmath, redondeando *half up* por línea. `QuoteCalculator` es la única fuente de verdad: la API, la vista imprimible y Angular muestran el mismo total. Angular solo previsualiza mientras se edita.
 - **Snapshots en las líneas.** Cada línea copia descripción, precio, tipo de IVA y porcentaje al crearse: un cambio posterior en el catálogo o en la ley no altera presupuestos emitidos.
@@ -129,7 +130,7 @@ php artisan test
 - **Mass assignment.** `number` y `status` no son `#[Fillable]`: el servidor asigna el número y el estado solo cambia por `PATCH /status`.
 - **Login seguro.** `Auth::attempt`, `session()->regenerate()`, mensaje de error genérico y límite de 5 intentos por minuto por email + IP.
 - **Diseño.** Paleta y tipografía de SoftNeos en `design/_tokens.scss`, importado antes de Bootstrap. Mejora de accesibilidad: texto azul noche sobre lima (contraste 9,28:1 frente al 1,64:1 del blanco).
-- **Fuera de alcance (decisión consciente):** registro de usuarios, roles, PDF, emails, multiempresa y despliegue. La API de clientes y referencias existe; sus pantallas en Angular quedan como siguiente paso.
+- **Fuera de alcance (decisión consciente):** registro de usuarios, roles, PDF, emails, multiempresa y despliegue. Clientes y referencias se crean y editan, pero no se borran: un presupuesto emitido los referencia (una referencia se da de baja con `active`).
 
 ## Capturas
 
