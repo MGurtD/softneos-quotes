@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\ProductReferenceController;
+use App\Http\Controllers\Api\QuoteController;
 use App\Http\Controllers\Api\VatTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,4 +18,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
 
     Route::apiResource('customers', CustomerController::class)->except('destroy');
     Route::apiResource('product-references', ProductReferenceController::class)->except('destroy');
+
+    Route::apiResource('quotes', QuoteController::class);
+    Route::patch('/quotes/{quote}/status', [QuoteController::class, 'updateStatus'])->name('quotes.status');
 });
