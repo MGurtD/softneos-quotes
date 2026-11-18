@@ -17,6 +17,7 @@ $brand-green: #007747;      // end of the Suite hero gradient
 $brand-ink: #232323;        // body text
 $brand-gray: #616161;       // secondary text: 6.2:1 on white
 $brand-surface: #f7f7f7;    // light section background
+$brand-red: #b42318;        // rejected / errors: 6.5:1 on white
 
 $brand-gradient: linear-gradient(135deg, $brand-blue 0%, $brand-green 100%);
 
@@ -25,6 +26,7 @@ $primary: $brand-blue;
 $secondary: $brand-gray;
 $success: $brand-green;
 $dark: $brand-navy;
+$danger: $brand-red;
 $light: $brand-surface;
 
 $body-color: $brand-ink;

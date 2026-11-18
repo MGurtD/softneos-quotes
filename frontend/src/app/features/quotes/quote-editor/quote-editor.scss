@@ -1,0 +1,62 @@
+// Bootstrap comes from the Blade page (global CSS); here only brand tokens.
+@use 'tokens' as *;
+
+:host {
+  display: block;
+}
+
+.editor-card {
+  border: 1px solid rgba($brand-navy, 0.12);
+  border-radius: $border-radius-lg;
+}
+
+.summary {
+  border-top: 4px solid $brand-lime;
+
+  @media (min-width: 992px) {
+    position: sticky;
+    top: 5.5rem;
+  }
+}
+
+.lines-table {
+  min-width: 900px;
+
+  thead th {
+    font-weight: 500;
+    color: $brand-gray;
+    white-space: nowrap;
+  }
+
+  .num {
+    width: 7rem;
+  }
+}
+
+.grand-total th,
+.grand-total td {
+  font-weight: 600;
+  color: $brand-blue;
+}
+
+.server-totals {
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba($brand-navy, 0.2);
+  color: $brand-blue;
+}
+
+.status-badge {
+  background: $brand-gray;
+
+  &[data-status='sent'] {
+    background: $brand-blue;
+  }
+
+  &[data-status='accepted'] {
+    background: $brand-green;
+  }
+
+  &[data-status='rejected'] {
+    background: $brand-red;
+  }
+}

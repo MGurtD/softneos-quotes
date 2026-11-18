@@ -1,0 +1,210 @@
+@if (loading()) {
+  <p class="text-secondary" role="status">Carregant el pressupost…</p>
+} @else {
+  <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+    <h1 class="h2 mb-0">{{ quote()?.number ?? 'Nou pressupost' }}</h1>
+    @if (quote(); as q) {
+      <span class="badge status-badge" [attr.data-status]="q.status.value">{{ q.status.label }}</span>
+    }
+  </div>
+
+  @if (errors().length) {
+    <div class="alert alert-danger" role="alert">
+      <ul class="mb-0 ps-3">
+        @for (error of errors(); track $index) {
+          <li>{{ error }}</li>
+        }
+      </ul>
+    </div>
+  }
+  @if (notice()) {
+    <div class="alert alert-success" role="status">{{ notice() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="row g-4" novalidate>
+    <div class="col-lg-8">
+      <!-- Header -->
+      <section class="card editor-card" aria-labelledby="dades">
+        <div class="card-body p-4">
+          <h2 id="dades" class="h5 mb-3">Dades</h2>
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label class="form-label" for="customer">Client</label>
+              <select id="customer" class="form-select" formControlName="customer_id"
+                      [class.is-invalid]="form.controls.customer_id.touched && form.controls.customer_id.invalid">
+                <option [ngValue]="null" disabled>Tria un client…</option>
+                @for (customer of customers.value()?.data ?? []; track customer.id) {
+                  <option [ngValue]="customer.id">{{ customer.name }} · {{ customer.tax_id }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label" for="issue_date">Data d’emissió</label>
+              <input id="issue_date" type="date" class="form-control" formControlName="issue_date">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label" for="valid_until">Vàlid fins al</label>
+              <input id="valid_until" type="date" class="form-control" formControlName="valid_until">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="notes">Observacions</label>
+              <textarea id="notes" class="form-control" rows="2" formControlName="notes"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Summary and actions -->
+    <aside class="col-lg-4">
+      <div class="card editor-card summary">
+        <div class="card-body p-4 d-grid gap-3">
+          <h2 class="h5 mb-0">Totals</h2>
+
+          @if (editable()) {
+            <table class="table table-sm mb-0">
+              <tbody>
+                @for (group of preview().breakdown; track group.rate) {
+                  <tr>
+                    <td>Base al {{ group.rate }} %</td>
+                    <td class="text-end">{{ group.base | currency: 'EUR' }}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-secondary">IVA {{ group.rate }} %</td>
+                    <td class="text-end text-secondary">{{ group.vat | currency: 'EUR' }}</td>
+                  </tr>
+                }
+                <tr class="grand-total">
+                  <th scope="row">Total</th>
+                  <td class="text-end">{{ preview().total | currency: 'EUR' }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="small text-secondary mb-0">Previsualització. En desar, el servidor recalcula els imports.</p>
+          }
+
+          @if (quote()?.totals; as totals) {
+            <div class="server-totals">
+              <p class="small text-secondary mb-1">{{ editable() ? 'Total desat' : 'Totals' }} (calculat al servidor)</p>
+              @if (!editable()) {
+                @for (group of totals.vat_breakdown; track group.rate) {
+                  <div class="d-flex justify-content-between small">
+                    <span>IVA {{ +group.rate }} % sobre {{ group.base | currency: 'EUR' }}</span>
+                    <span>{{ group.vat | currency: 'EUR' }}</span>
+                  </div>
+                }
+              }
+              <div class="d-flex justify-content-between fw-semibold fs-5">
+                <span>Total</span><span>{{ totals.total | currency: 'EUR' }}</span>
+              </div>
+            </div>
+          }
+
+          @if (editable()) {
+            <button type="submit" class="btn btn-primary btn-lg" [disabled]="saving()">
+              {{ saving() ? 'Desant…' : 'Desa' }}
+            </button>
+          }
+
+          @if (quote(); as q) {
+            @if (q.status.transitions.length) {
+              <div class="d-grid gap-2">
+                <p class="small text-secondary mb-0">Canvia l’estat</p>
+                @for (transition of q.status.transitions; track transition.value) {
+                  <button type="button" class="btn btn-outline-primary" [disabled]="saving()"
+                          (click)="changeStatus(transition.value)">Passa a «{{ transition.label }}»</button>
+                }
+              </div>
+            }
+            <a class="btn btn-outline-secondary" [href]="'/quotes/' + q.id + '/print'" target="_blank" rel="noopener">Vista imprimible</a>
+            @if (editable()) {
+              <button type="button" class="btn btn-link text-danger" (click)="remove()">Esborra l’esborrany</button>
+            }
+          }
+        </div>
+      </div>
+    </aside>
+
+    <div class="col-12">
+      <!-- Lines -->
+      <section class="card editor-card" aria-labelledby="linies">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 id="linies" class="h5 mb-0">Línies</h2>
+            @if (editable()) {
+              <button type="button" class="btn btn-outline-primary btn-sm" (click)="addLine()">Afegeix línia</button>
+            }
+          </div>
+
+          <div class="table-responsive">
+            <table class="table align-middle lines-table mb-0" formArrayName="lines">
+              <thead>
+                <tr>
+                  <th scope="col">Referència</th>
+                  <th scope="col">Descripció</th>
+                  <th scope="col" class="num">Quantitat</th>
+                  <th scope="col" class="num">Preu</th>
+                  <th scope="col" class="num">Dte. %</th>
+                  <th scope="col">IVA</th>
+                  <th scope="col" class="text-end">Base</th>
+                  <th scope="col"><span class="visually-hidden">Accions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (line of lines.controls; track line; let i = $index) {
+                  <tr [formGroupName]="i">
+                    <td>
+                      <select class="form-select form-select-sm" formControlName="product_reference_id"
+                              (change)="onReferenceChange(i)" [attr.aria-label]="'Referència de la línia ' + (i + 1)">
+                        <option [ngValue]="null">Text lliure</option>
+                        @for (ref of references.value()?.data ?? []; track ref.id) {
+                          <option [ngValue]="ref.id">{{ ref.code }}</option>
+                        }
+                      </select>
+                    </td>
+                    <td>
+                      <input class="form-control form-control-sm" formControlName="description"
+                             [attr.aria-label]="'Descripció de la línia ' + (i + 1)"
+                             [class.is-invalid]="line.controls.description.touched && line.controls.description.invalid">
+                    </td>
+                    <td class="num">
+                      <input type="number" step="0.001" min="0" class="form-control form-control-sm text-end" formControlName="quantity"
+                             [attr.aria-label]="'Quantitat de la línia ' + (i + 1)"
+                             [class.is-invalid]="line.controls.quantity.invalid">
+                    </td>
+                    <td class="num">
+                      <input type="number" step="0.01" min="0" class="form-control form-control-sm text-end" formControlName="unit_price"
+                             [attr.aria-label]="'Preu de la línia ' + (i + 1)">
+                    </td>
+                    <td class="num">
+                      <input type="number" step="0.01" min="0" max="100" class="form-control form-control-sm text-end" formControlName="discount_pct"
+                             [attr.aria-label]="'Descompte de la línia ' + (i + 1)">
+                    </td>
+                    <td>
+                      <select class="form-select form-select-sm" formControlName="vat_type_id"
+                              [attr.aria-label]="'IVA de la línia ' + (i + 1)"
+                              [class.is-invalid]="line.controls.vat_type_id.touched && line.controls.vat_type_id.invalid">
+                        <option [ngValue]="null" disabled>—</option>
+                        @for (vat of vatTypes.value()?.data ?? []; track vat.id) {
+                          <option [ngValue]="vat.id">{{ vat.name }} ({{ +vat.rate }} %)</option>
+                        }
+                      </select>
+                    </td>
+                    <td class="text-end text-nowrap">{{ lineBase(i) | currency: 'EUR' }}</td>
+                    <td class="text-end">
+                      @if (editable() && lines.length > 1) {
+                        <button type="button" class="btn btn-link btn-sm text-danger p-0" (click)="removeLine(i)"
+                                [attr.aria-label]="'Elimina la línia ' + (i + 1)">Elimina</button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </form>
+}

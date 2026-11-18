@@ -5,6 +5,7 @@ import { createCustomElement } from '@angular/elements';
 import { createApplication } from '@angular/platform-browser';
 
 import { appConfig } from './app/app.config';
+import { QuoteEditor } from './app/features/quotes/quote-editor/quote-editor';
 import { QuoteList } from './app/features/quotes/quote-list/quote-list';
 
 /**
@@ -14,6 +15,7 @@ import { QuoteList } from './app/features/quotes/quote-list/quote-list';
  */
 const elements: Record<string, Type<unknown>> = {
   'sn-quote-list': QuoteList,
+  'sn-quote-editor': QuoteEditor,
 };
 
 registerLocaleData(localeCa);
