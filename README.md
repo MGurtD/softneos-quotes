@@ -142,6 +142,7 @@ php artisan test
 | ![Portada](docs/screenshots/01-portada.jpg) | ![Inici de sessió](docs/screenshots/02-login.jpg) |
 | ![Llistat de pressupostos](docs/screenshots/03-llistat-pressupostos.jpg) | ![Editor d'un esborrany](docs/screenshots/04-editor-esborrany.jpg) |
 | ![Editor d'un pressupost enviat](docs/screenshots/05-editor-enviat.jpg) | ![Vista imprimible](docs/screenshots/06-vista-imprimible.jpg) |
+| ![Clients](docs/screenshots/07-clients.jpg) | ![Referències](docs/screenshots/08-referencies.jpg) |
 
 ## Ús de la IA
 
