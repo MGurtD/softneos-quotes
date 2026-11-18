@@ -1,6 +1,7 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 
+import { ajaxHeaderInterceptor } from './core/ajax-header.interceptor';
 import { sessionExpiredInterceptor } from './core/session-expired.interceptor';
 
 /**
@@ -11,7 +12,7 @@ import { sessionExpiredInterceptor } from './core/session-expired.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideHttpClient(withInterceptors([sessionExpiredInterceptor])),
+    provideHttpClient(withInterceptors([ajaxHeaderInterceptor, sessionExpiredInterceptor])),
     { provide: LOCALE_ID, useValue: 'ca' },
   ],
 };
