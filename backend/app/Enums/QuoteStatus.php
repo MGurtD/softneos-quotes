@@ -14,15 +14,15 @@ enum QuoteStatus: string
     case Rejected = 'rejected';
 
     /**
-     * Human-readable label shown in the UI (Spanish).
+     * Human-readable label shown in the UI (Catalan).
      */
     public function label(): string
     {
         return match ($this) {
-            self::Draft => 'Borrador',
-            self::Sent => 'Enviado',
-            self::Accepted => 'Aceptado',
-            self::Rejected => 'Rechazado',
+            self::Draft => 'Esborrany',
+            self::Sent => 'Enviat',
+            self::Accepted => 'Acceptat',
+            self::Rejected => 'Rebutjat',
         };
     }
 

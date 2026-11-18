@@ -14,9 +14,9 @@ class VatTypeSeeder extends Seeder
     {
         $types = [
             ['name' => 'General', 'rate' => '21.00'],
-            ['name' => 'Reducido', 'rate' => '10.00'],
-            ['name' => 'Superreducido', 'rate' => '4.00'],
-            ['name' => 'Exento', 'rate' => '0.00'],
+            ['name' => 'Reduït', 'rate' => '10.00'],
+            ['name' => 'Superreduït', 'rate' => '4.00'],
+            ['name' => 'Exempt', 'rate' => '0.00'],
         ];
 
         foreach ($types as $type) {

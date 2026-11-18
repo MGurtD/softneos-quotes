@@ -15,7 +15,7 @@ La especificación completa está en `docs/SPEC.md`. Léela antes de cada fase.
 - PHP: PSR-12, tipos estrictos en firmas, controllers delgados (validación en FormRequest, lógica en Services/Enums, salida en API Resources).
 - Angular: standalone components, signals para estado, servicios para HTTP, Reactive Forms, nueva sintaxis de control flow (@if, @for).
 - Estilos: SCSS; variables de marca en un único fichero de tokens; nada de colores hardcodeados en componentes.
-- Código y nombres en inglés; textos de interfaz en español.
+- Código y nombres en inglés; textos de interfaz en catalán (toda la aplicación: Blade, API y Angular).
 - Dinero: columnas decimal, cast decimal:2, nunca float.
 
 ## Comandos

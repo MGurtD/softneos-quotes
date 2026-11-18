@@ -106,7 +106,7 @@ class QuoteApiTest extends TestCase
         $this->actingAs(User::factory()->create())
             ->patchJson("/api/quotes/{$quote->id}/status", ['status' => 'sent'])
             ->assertOk()
-            ->assertJsonPath('data.status', ['value' => 'sent', 'label' => 'Enviado']);
+            ->assertJsonPath('data.status', ['value' => 'sent', 'label' => 'Enviat']);
     }
 
     public function test_forbidden_status_transition_returns_422(): void

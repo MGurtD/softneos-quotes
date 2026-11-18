@@ -38,7 +38,7 @@ class QuoteSeeder extends Seeder
                 'customer_id' => $customers->random()->id,
                 'issue_date' => $issueDate,
                 'valid_until' => $issueDate->copy()->addDays(30),
-                'notes' => fake()->boolean(30) ? 'Plazo de entrega: 3 semanas desde la aceptación.' : null,
+                'notes' => fake()->boolean(30) ? 'Termini de lliurament: 3 setmanes des de l’acceptació.' : null,
             ]);
 
             $lineReferences = $references->random(fake()->numberBetween(2, 6))->values();

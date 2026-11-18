@@ -68,7 +68,7 @@ class QuoteService
         if (! $quote->status->canTransitionTo($target)) {
             throw ValidationException::withMessages([
                 'status' => sprintf(
-                    'No se puede pasar un presupuesto de «%s» a «%s».',
+                    'No es pot passar un pressupost de «%s» a «%s».',
                     $quote->status->label(),
                     $target->label(),
                 ),
@@ -77,7 +77,7 @@ class QuoteService
 
         if ($target === QuoteStatus::Sent && ! $quote->lines()->exists()) {
             throw ValidationException::withMessages([
-                'status' => 'No se puede enviar un presupuesto sin líneas.',
+                'status' => 'No es pot enviar un pressupost sense línies.',
             ]);
         }
 
@@ -92,7 +92,7 @@ class QuoteService
         if (! $quote->status->isEditable()) {
             throw ValidationException::withMessages([
                 'status' => sprintf(
-                    'Solo se pueden modificar o borrar presupuestos en borrador. Este está «%s».',
+                    'Només es poden modificar o esborrar pressupostos en esborrany. Aquest està «%s».',
                     $quote->status->label(),
                 ),
             ]);
