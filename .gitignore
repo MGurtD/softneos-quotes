@@ -16,7 +16,7 @@ dist/
 .angular/
 backend/public/build/
 backend/public/hot
-backend/public/app/
+backend/public/angular/
 
 # --- Logs & test artifacts ---
 *.log

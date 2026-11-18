@@ -23,15 +23,19 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "src/styles.scss"
-            ]
+            "assets": [],
+            "styles": [],
+            "outputPath": {
+              "base": "../backend/public/angular",
+              "browser": ""
+            },
+            "index": false,
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "../design"
+              ]
+            },
+            "outputHashing": "none"
           },
           "configurations": {
             "production": {
@@ -47,7 +51,7 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "none"
             },
             "development": {
               "optimization": false,

@@ -1,0 +1,16 @@
+// Bootstrap comes from the Blade page (global CSS); here only brand tokens.
+@use 'tokens' as *;
+
+:host {
+  display: block;
+}
+
+.quote-table {
+  border: 1px solid rgba($brand-navy, 0.12);
+  border-radius: $border-radius-lg;
+
+  thead th {
+    font-weight: 500;
+    color: $brand-gray;
+  }
+}

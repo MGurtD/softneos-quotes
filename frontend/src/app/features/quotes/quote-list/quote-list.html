@@ -1,0 +1,36 @@
+@if (quotes.isLoading()) {
+  <p class="text-secondary" role="status">Carregant pressupostos…</p>
+} @else if (quotes.error()) {
+  <div class="alert alert-danger" role="alert">No s’han pogut carregar els pressupostos. Torna-ho a provar.</div>
+} @else if (quotes.value(); as page) {
+  <div class="table-responsive quote-table">
+    <table class="table table-hover align-middle mb-0">
+      <caption class="visually-hidden">Llistat de pressupostos</caption>
+      <thead>
+        <tr>
+          <th scope="col">Número</th>
+          <th scope="col">Client</th>
+          <th scope="col">Data</th>
+          <th scope="col">Estat</th>
+          <th scope="col" class="text-end">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (quote of page.data; track quote.id) {
+          <tr>
+            <td class="fw-semibold text-primary">{{ quote.number }}</td>
+            <td>{{ quote.customer?.name }}</td>
+            <td>{{ quote.issue_date | date: 'dd/MM/yyyy' }}</td>
+            <td><span class="badge" [class]="badgeClass(quote.status.value)">{{ quote.status.label }}</span></td>
+            <td class="text-end">{{ quote.totals?.total | currency: 'EUR' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="text-center text-secondary py-4">Encara no hi ha cap pressupost.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="small text-secondary mt-2 mb-0">{{ page.meta.total }} pressupostos</p>
+}
