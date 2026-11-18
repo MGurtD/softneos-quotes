@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         fake()->seed(2026);
 
         User::factory()->create([
-            'name' => 'Usuario Demo',
+            'name' => 'Usuari Demo',
             'email' => 'demo@softneos.test',
             'password' => 'password',
         ]);

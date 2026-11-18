@@ -13,12 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Requests to /api coming from SANCTUM_STATEFUL_DOMAINS (the Angular SPA)
+        // Requests to /api from SANCTUM_STATEFUL_DOMAINS (the Angular elements)
         // authenticate with the Laravel session cookie instead of API tokens.
         $middleware->statefulApi();
 
-        // A logged-in user who opens /login goes straight to the Angular app.
-        $middleware->redirectUsersTo(fn (): string => config('app.frontend_url'));
+        // A logged-in user who opens /login goes straight to the clients area.
+        $middleware->redirectUsersTo(fn (): string => route('quotes.index'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

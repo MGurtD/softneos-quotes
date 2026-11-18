@@ -10,12 +10,12 @@ class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_valid_credentials_log_in_and_redirect_to_the_angular_app(): void
+    public function test_valid_credentials_log_in_and_redirect_to_the_clients_area(): void
     {
         $user = User::factory()->create(['password' => 'password']);
 
         $this->post('/login', ['email' => $user->email, 'password' => 'password'])
-            ->assertRedirect(config('app.frontend_url'));
+            ->assertRedirect(route('quotes.index'));
 
         $this->assertAuthenticatedAs($user);
     }

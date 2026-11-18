@@ -12,6 +12,10 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:login');
 });
 
-Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
+// Clients area: Blade pages that host the Angular custom elements.
+Route::middleware('auth')->group(function (): void {
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
-Route::get('/quotes/{quote}/print', QuotePrintController::class)->middleware('auth')->name('quotes.print');
+    Route::view('/pressupostos', 'quotes.index')->name('quotes.index');
+    Route::get('/quotes/{quote}/print', QuotePrintController::class)->name('quotes.print');
+});

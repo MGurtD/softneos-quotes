@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * Session login in Blade. The session cookie it creates is the one the
- * Angular SPA reuses through Sanctum (stateful API).
+ * Angular elements reuse to call /api through Sanctum (stateful API).
  */
 class LoginController extends Controller
 {
@@ -22,7 +22,7 @@ class LoginController extends Controller
 
     /**
      * Wrong credentials: back to the form with a Catalan error and the email
-     * kept. Right credentials: new session id and redirect to the Angular app.
+     * kept. Right credentials: new session id and redirect to the clients area.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -35,7 +35,7 @@ class LoginController extends Controller
         }
         $request->session()->regenerate();
 
-        return redirect()->intended(config('app.frontend_url'));
+        return redirect()->intended(route('quotes.index'));
     }
 
     public function destroy(Request $request): RedirectResponse

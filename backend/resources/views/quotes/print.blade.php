@@ -18,7 +18,7 @@
 </head>
 <body class="print-body">
     <nav class="print-toolbar container d-flex justify-content-between align-items-center py-3" aria-label="Accions">
-        <a class="link-secondary" href="{{ config('app.frontend_url') }}">&larr; Tornar a l’àrea de clients</a>
+        <a class="link-secondary" href="{{ route('quotes.index') }}">&larr; Tornar a l’àrea de clients</a>
         <button type="button" class="btn btn-primary" onclick="window.print()">Imprimeix</button>
     </nav>
 
