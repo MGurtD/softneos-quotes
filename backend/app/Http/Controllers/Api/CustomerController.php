@@ -7,9 +7,9 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 
 class CustomerController extends Controller
 {
@@ -33,7 +33,7 @@ class CustomerController extends Controller
         return CustomerResource::collection($customers);
     }
 
-    public function store(StoreCustomerRequest $request): Response
+    public function store(StoreCustomerRequest $request): JsonResponse
     {
         $customer = Customer::create($request->validated());
 

@@ -7,9 +7,9 @@ use App\Http\Requests\StoreProductReferenceRequest;
 use App\Http\Requests\UpdateProductReferenceRequest;
 use App\Http\Resources\ProductReferenceResource;
 use App\Models\ProductReference;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 
 class ProductReferenceController extends Controller
 {
@@ -35,7 +35,7 @@ class ProductReferenceController extends Controller
         return ProductReferenceResource::collection($references);
     }
 
-    public function store(StoreProductReferenceRequest $request): Response
+    public function store(StoreProductReferenceRequest $request): JsonResponse
     {
         $reference = ProductReference::create($request->validated());
 
