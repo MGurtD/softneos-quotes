@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
- * Every API route needs a session: the Angular SPA authenticates with the
- * Sanctum cookie (statefulApi in bootstrap/app.php).
+ * Every API route needs a session: the Angular elements authenticate with the
+ * Sanctum cookie (statefulApi in bootstrap/app.php). Route names get the api.
+ * prefix so they never clash with the Blade pages (quotes.index...).
  */
-Route::middleware('auth:sanctum')->group(function (): void {
+Route::middleware('auth:sanctum')->name('api.')->group(function (): void {
     Route::get('/user', fn (Request $request) => $request->user());
 
     Route::get('/vat-types', VatTypeController::class);
